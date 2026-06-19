@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:seechange/services/notification_service.dart';
 
 class Assignedtask extends StatelessWidget {
   const Assignedtask({super.key});
@@ -78,6 +79,15 @@ class Assignedtask extends StatelessWidget {
                                                 .update({
                                               'status': 'approved'
                                             }).then((_) {
+                                              final orgId = data?['organization_id'];
+                                              if (orgId != null) {
+                                                NotificationService.sendNotification(
+                                                  userId: orgId,
+                                                  title: 'Charity Request Approved',
+                                                  body: 'Your charity project "$purpose" has been approved and is now active for donations.',
+                                                  type: 'approval',
+                                                );
+                                              }
                                               if (context.mounted) {
                                                 ScaffoldMessenger.of(context)
                                                     .showSnackBar(
@@ -113,6 +123,15 @@ class Assignedtask extends StatelessWidget {
                                                 .update({
                                               'status': 'rejected'
                                             }).then((_) {
+                                              final orgId = data?['organization_id'];
+                                              if (orgId != null) {
+                                                NotificationService.sendNotification(
+                                                  userId: orgId,
+                                                  title: 'Charity Request Rejected',
+                                                  body: 'Your charity project "$purpose" was rejected during volunteer verification.',
+                                                  type: 'rejection',
+                                                );
+                                              }
                                               if (context.mounted) {
                                                 ScaffoldMessenger.of(context)
                                                     .showSnackBar(

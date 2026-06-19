@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:seechange/services/notification_service.dart';
 
 class VerifyOrg extends StatelessWidget {
   const VerifyOrg({super.key});
@@ -98,7 +99,7 @@ class VerifyOrg extends StatelessWidget {
                                           radius: 200,
                                           backgroundColor: Colors.transparent,
                                           backgroundImage: NetworkImage(
-                                              "https://ygnoqrlyolmswdzsmbdu.supabase.co/storage/v1/object/public/images/${imageUrl}"),
+                                              "https://ygnoqrlyolmswdzsmbdu.supabase.co/storage/v1/object/public/images/$imageUrl"),
                                         ),
                                       ),
                                     ),
@@ -130,6 +131,13 @@ class VerifyOrg extends StatelessWidget {
                                 .update({'verfiedby': 'admin'});
                                   await FirebaseFirestore.instance.collection("login").doc(data.id)
                                 .update({"role":"org"});
+                              
+                              await NotificationService.sendNotification(
+                                userId: data.id,
+                                title: 'Organization Approved',
+                                body: 'Your organization account has been approved by the Admin.',
+                                type: 'approval',
+                              );
                               },
                               style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.green,
@@ -148,6 +156,12 @@ class VerifyOrg extends StatelessWidget {
                                 .doc(data.id)
                                 .update({'verfiedby': 'rejected by admin'});
                               
+                              await NotificationService.sendNotification(
+                                userId: data.id,
+                                title: 'Organization Rejected',
+                                body: 'Your organization account verification request was rejected.',
+                                type: 'rejection',
+                              );
                               },
                               style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.red,

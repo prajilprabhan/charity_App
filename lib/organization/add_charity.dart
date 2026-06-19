@@ -4,8 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:lottie/lottie.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
 class AddCharity extends StatefulWidget {
   const AddCharity({super.key});
 
@@ -23,6 +24,7 @@ class _AddCharityState extends State<AddCharity> {
   final TextEditingController date = TextEditingController();
   File? selectedimage;
   String path =" ";
+  String? selectedCategory;
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime now = DateTime.now();
@@ -44,28 +46,61 @@ class _AddCharityState extends State<AddCharity> {
 
 void add_charity()async
 {
-  // Get current user ID from FirebaseAuth
-  final String? userId = FirebaseAuth.instance.currentUser?.uid;
-
-  await FirebaseFirestore.instance.collection('charity').add({
-    'purpose': purpose.text.trim(),
-    "description": description.text.trim(),
-    "goal_amount": amount.text.trim(),
-    "deadline": date.text.trim(),
-    "organization_id": userId,
-    "status":"pending",
-    "verfiedby":"null",
-    "assigned":"null"
+  setState(() {
+    _isLoading = true;
   });
-  Navigator.pop(context);
-  ScaffoldMessenger.of(context).showSnackBar(
-     SnackBar(
-       behavior: SnackBarBehavior.floating,
-       margin: EdgeInsets.all(10),
-       content: Text("Charity Project Added", style: TextStyle(color: Colors.black)),
-       backgroundColor: const Color.fromARGB(255, 54, 244, 82),
-     ),
-   );
+  try {
+    String imagePath = "";
+    if (selectedimage != null) {
+      final filename = DateTime.now().millisecondsSinceEpoch.toString();
+      imagePath = 'uploads/charity/$filename';
+      await Supabase.instance.client.storage.from('images').upload(imagePath, selectedimage!);
+    }
+
+    final String? userId = FirebaseAuth.instance.currentUser?.uid;
+
+    await FirebaseFirestore.instance.collection('charity').add({
+      'purpose': purpose.text.trim(),
+      "description": description.text.trim(),
+      "goal_amount": amount.text.trim(),
+      "deadline": date.text.trim(),
+      "organization_id": userId,
+      "status": "pending",
+      "verfiedby": "null",
+      "assigned": "null",
+      "category": selectedCategory ?? "General Charity",
+      "collected_amount": 0.0,
+      "imageurl": imagePath,
+      "created_at": DateTime.now(),
+    });
+
+    if (context.mounted) {
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.all(10),
+          content: Text("Charity Project Added", style: TextStyle(color: Colors.black)),
+          backgroundColor: const Color.fromARGB(255, 54, 244, 82),
+        ),
+      );
+    }
+  } catch (e) {
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Error: $e"),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  } finally {
+    if (context.mounted) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 }
 
 
@@ -204,6 +239,42 @@ void add_charity()async
                             }
                             return null;
                           },
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10, bottom: 10),
+                          child: DropdownButtonFormField<String>(
+                            decoration: InputDecoration(
+                              label: Text("Category"),
+                              prefixIcon: Icon(Icons.category),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            items: [
+                              'Medical & Healthcare',
+                              'Education',
+                              'Disaster Relief',
+                              'Hunger & Food',
+                              'Shelter & Housing',
+                              'General Charity'
+                            ].map((category) => DropdownMenuItem(
+                                  value: category,
+                                  child: Text(category),
+                                ))
+                                .toList(),
+                            value: selectedCategory,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedCategory = value;
+                              });
+                            },
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Category is required';
+                              }
+                              return null;
+                            },
                           ),
                         ),
                         Padding(

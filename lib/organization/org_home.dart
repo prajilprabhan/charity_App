@@ -1,11 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:seechange/about.dart';
 import 'package:seechange/admin/view_news.dart';
 import 'package:seechange/login.dart';
 import 'package:seechange/organization/add_charity.dart';
 import 'package:seechange/organization/org_add_news.dart';
+import 'package:seechange/organization/org_projects.dart';
 
 class OrgHome extends StatelessWidget {
   const OrgHome({super.key});
@@ -74,19 +74,34 @@ class OrgHome extends StatelessWidget {
                 ListTile(
                   leading: Icon(Icons.details,color: Colors.white,),
                   title: Text("Project Details",style: TextStyle(color: Colors.white, fontSize: 14),),
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const OrgProjectsScreen()),
+                    );
+                  },
                 ),
                 Divider(),
                 ListTile(
                   leading: Icon(Icons.verified_outlined,color: Colors.white,),
                   title: Text("Approved Projects",style: TextStyle(color: Colors.white, fontSize: 14),),
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const OrgProjectsScreen()),
+                    );
+                  },
                 ),
                 Divider(),
                 ListTile(
                   leading: Icon(Icons.cancel_presentation,color: Colors.white,),
                   title: Text("Rejected Projects",style: TextStyle(color: Colors.white, fontSize: 14),),
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const OrgProjectsScreen()),
+                    );
+                  },
                 ),
                 Divider(),
                 

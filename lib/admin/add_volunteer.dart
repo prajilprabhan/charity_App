@@ -382,7 +382,7 @@ class _AddVolunteerState extends State<AddVolunteer> {
                             ),
                             child: 
                                  Text(
-                                    'LogIn',
+                                    'Add Volunteer',
                                     style: TextStyle(fontSize: 18),
                                   ),
                           ),

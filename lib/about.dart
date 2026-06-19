@@ -10,7 +10,7 @@ class About extends StatelessWidget {
         backgroundColor: Colors.teal.shade700,
         foregroundColor: Colors.white,
         title: const Text(
-          'Organization',
+          'About Us',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w600,

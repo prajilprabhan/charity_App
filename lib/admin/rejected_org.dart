@@ -26,7 +26,7 @@ class RejectedOrg extends StatelessWidget {
         const Icon(Icons.verified, color: Colors.white),
         const SizedBox(width: 10),
         Text(
-          "Verify Organizations",
+          "Rejected Organizations",
           style: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,

@@ -14,6 +14,9 @@ import 'package:seechange/admin/view_news.dart';
 import 'package:seechange/admin/view_org.dart';
 import 'package:seechange/admin/view_volunteers.dart';
 import 'package:seechange/login.dart';
+import 'package:seechange/admin/admin_users.dart';
+import 'package:seechange/admin/admin_donations.dart';
+import 'package:seechange/admin/admin_reports.dart';
 
 class AdminHome extends StatelessWidget {
   const AdminHome({super.key});
@@ -120,7 +123,7 @@ class AdminHome extends StatelessWidget {
                   ),
                   onTap: () {
                   Navigator.pop(context);
-                  // TODO: Implement pending verification navigation
+                   Navigator.push(context, MaterialPageRoute(builder: (context) => VerifyOrg()));
                   },
                 ),
                 ListTile(
@@ -236,16 +239,38 @@ class AdminHome extends StatelessWidget {
             ),
             Divider(),
             ListTile(
-              leading: const Icon(Icons.bar_chart, color: Colors.white),
+              leading: const Icon(Icons.supervised_user_circle, color: Colors.white),
               title: const Text(
-                'Reports',
+                'User Management',
                 style: TextStyle(color: Colors.white, fontSize: 16),
               ),
               onTap: () {
                 Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Reports page coming soon!')),
-                );
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminUsersScreen()));
+              },
+            ),
+            Divider(),
+            ListTile(
+              leading: const Icon(Icons.payment, color: Colors.white),
+              title: const Text(
+                'Donations & Refunds',
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminDonationsScreen()));
+              },
+            ),
+            Divider(),
+            ListTile(
+              leading: const Icon(Icons.bar_chart, color: Colors.white),
+              title: const Text(
+                'Reports & Analytics',
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminReportsScreen()));
               },
             ),
              Divider(),
